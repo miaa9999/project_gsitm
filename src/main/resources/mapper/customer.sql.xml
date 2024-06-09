@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE  mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.homework.mapper.CustomerMapper">
+	<select id="getCustomerDetail" parameterType="Long"
+		resultType="map">
+		SELECT
+		cust.frst_reg_dt,cust.cust_nm,cust.pridtf_no,cust.eml_addr,cust.home_telno,cust.mbl_telno,
+		cust.cr_nm,cust.road_nm_addr,cust.cust_sn,cust.pic_sn_vl,
+		pic.pic_name,pic.tkcg_dept_nm,pic.pic_position,pic.pic_phone
+		FROM
+		kdt_cust_info_basc cust join kdt_pic_info_basc pic
+		on cust.pic_sn_vl =
+		pic.pic_sn_vl
+		where cust.cust_sn = #{cust_sn};
+	</select>
+	<select id="search" parameterType="String" resultType="map">
+		SELECT
+		cust_nm,cust_sn
+		FROM
+		kdt_cust_info_basc
+		where cust_nm LIKE CONCAT('%',
+		#{keyword}, '%')
+	</select>
+	<delete id="deleteCustomerConsultations" parameterType="Long">
+		DELETE
+		FROM kdt_consultation WHERE cust_sn = #{cust_sn};
+	</delete>
+	<delete id="deleteCustomer" parameterType="Long">
+		DELETE FROM
+		kdt_cust_info_basc
+		where cust_sn = #{cust_sn}
+	</delete>
+	<select id="getAllCustomers" resultType="map">
+		SELECT * from
+		kdt_cust_info_basc
+	</select>
+	<select id="searchPicName" parameterType="String"
+		resultType="map">
+		SELECT * from
+		kdt_pic_info_basc
+		where pic_name LIKE
+		CONCAT('%',
+		#{new_pic_name}, '%')
+	</select>
+	<update id="updateCustomer" parameterType="customerDto">
+		UPDATE
+		kdt_cust_info_basc
+		SET
+		cust_nm = #{customerDto.cust_nm},
+		pridtf_no
+		=#{customerDto.pridtf_no},
+		eml_addr = #{customerDto.eml_addr},
+		home_telno =#{customerDto.home_telno},
+		mbl_telno =
+		#{customerDto.mbl_telno},
+		cr_nm =#{customerDto.cr_nm},
+		road_nm_addr =
+		#{customerDto.road_nm_addr}
+		WHERE cust_sn = #{customerDto.cust_sn}
+	</update>
+	<update id="updatePicInfo" parameterType="customerDto">
+		UPDATE
+		kdt_cust_info_basc cust
+		SET
+		pic_sn_vl = (
+		SELECT pic_sn_vl
+		FROM
+		kdt_pic_info_basc
+		WHERE pic_name = #{customerDto.pic_name}
+		)
+		WHERE
+		cust.cust_sn = #{customerDto.cust_sn}
+	</update>
+	
+</mapper>
