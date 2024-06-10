@@ -3,8 +3,8 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 	<typeAliases>
-<!-- 		<typeAlias type="kr.co.myapp.dto.AdminDto" alias="adminDto"></typeAlias> -->
-<!-- 		<typeAlias type="kr.co.myapp.dto.BookDto" alias="bookDto"></typeAlias> -->
-<!-- 		<typeAlias type="kr.co.myapp.dto.UserDto" alias="userDto"></typeAlias> -->
+		<typeAlias type="kr.co.homework.dto.kdt_cust_info_basc_Dto" alias="customerDto"></typeAlias>
+        <typeAlias type="kr.co.homework.dto.kdt_pic_info_basc_Dto" alias="picDto"></typeAlias>
+         <typeAlias type="kr.co.homework.dto.kdt_consultation_Dto" alias="consultationDto"></typeAlias>
 	</typeAliases>
 </configuration>
