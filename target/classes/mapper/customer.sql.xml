@@ -15,6 +15,16 @@
 		pic.pic_sn_vl
 		where cust.cust_sn = #{cust_sn};
 	</select>
+	<select id="consultFindByCustSn" resultType="consultationDto"
+		parameterType="Long">
+		SELECT
+		cons.consultation_no,cons.cust_sn,cons.pic_sn_vl,cons.cons_date,
+		cons.consultation
+		FROM kdt_cust_info_basc cust
+		JOIN kdt_consultation
+		cons ON cons.cust_sn = cust.cust_sn
+		WHERE cust.cust_sn = #{cust_sn};
+	</select>
 	<select id="search" parameterType="String" resultType="map">
 		SELECT
 		cust_nm,cust_sn
@@ -73,5 +83,5 @@
 		WHERE
 		cust.cust_sn = #{customerDto.cust_sn}
 	</update>
-	
+
 </mapper>

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.sun.org.apache.regexp.internal.recompile;
 
+import kr.co.homework.dto.kdt_consultation_Dto;
 import kr.co.homework.dto.kdt_cust_info_basc_Dto;
 import kr.co.homework.dto.kdt_pic_info_basc_Dto;
 import kr.co.homework.mapper.CustomerMapper;
@@ -48,6 +49,12 @@ public class CustomerService {
 		mapper.updatePicInfo(customerDto);
 		
 	}
+
+	public List<kdt_consultation_Dto> consultFindByCustSn(Long cust_sn) {
+		return mapper.consultFindByCustSn(cust_sn);
+	}
+
+
 
 
 

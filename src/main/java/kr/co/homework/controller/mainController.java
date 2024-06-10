@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import kr.co.homework.dto.kdt_consultation_Dto;
 import kr.co.homework.dto.kdt_cust_info_basc_Dto;
 import kr.co.homework.dto.kdt_pic_info_basc_Dto;
 import kr.co.homework.service.CustomerService;
@@ -33,6 +35,7 @@ public class mainController {
 	public String customerInfoPage() {
 		return "customer/customerInfoPage";
 	}
+
 
 	// 일단 수정/삭제 돌아가는 검색(이름만 검색)
 
@@ -55,7 +58,10 @@ public class mainController {
 	public String getCustomerDetail(@PathVariable("cust_sn") Long cust_sn, Model model) {
 		// 고객 상세 정보 조회 메서드 호출
 		Map<String, Object> customerDetail = customerService.getCustomerDetail(cust_sn);
-
+		List<kdt_consultation_Dto> consultList = customerService.consultFindByCustSn(cust_sn);
+		System.out.println(consultList);
+        //상담내역 조회하기
+		model.addAttribute("consultList",consultList);
 		// 조회된 고객 정보를 모델에 추가
 		model.addAttribute("customer", customerDetail);
 
@@ -84,7 +90,5 @@ public class mainController {
 		customerService.deleteCustomer(cust_sn);
 		return "/mainPage";
 	}
-
-	
 
 }

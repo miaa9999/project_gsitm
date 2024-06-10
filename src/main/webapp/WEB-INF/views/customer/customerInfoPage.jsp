@@ -6,190 +6,280 @@
 <head>
 <meta charset="UTF-8">
 <title>Customer Management</title>
-<style>
-.container {
-	display: flex;
-	justify-content: space-between;
-	margin-bottom: 20px; /* 바닥에서 떨어진 정도 */
-}
-
-.search-container, .details-container, .consultation-container {
-	width: 50%; /* 각 칸의 너비 */
-	padding: 10px; /* 안쪽 여백 */
-}
-
-.search {
-	margin-bottom: 20px; /* 아래 여백 */
-}
-
-.details form {
-	display: flex;
-	flex-direction: column;
-}
-
-.input-with-button {
-	position: relative;
-	display: inline-block;
-}
-
-.input-with-button input[type="text"] {
-	padding-right: 60px; /* 버튼이 들어갈 공간 확보 */
-}
-
-.input-with-button button {
-	position: absolute;
-	right: 0;
-	top: 0;
-	height: 100%;
-}
-</style>
+<link href="${path}/resources/css/customerPage.css" rel="stylesheet">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-        function validateSearch() {
-            var keyword = document.getElementById("keywordInput").value.trim();
-            if (keyword === "") {
-                document.getElementById("errorMessage").style.display = "inline";
-            } else {
-                document.getElementById("errorMessage").style.display = "none";
-                document.getElementById("searchForm").submit();
-            }
-        }
-        function validatePicNameSearch() {
-            var new_pic_name = document.getElementById("new_pic_name").value.trim();
-            if (new_pic_name === "") {
-                document.getElementById("errorMessage").style.display = "inline";
-            } else {
-                document.getElementById("errorMessage").style.display = "none";
-                document.getElementById("findPicName").submit();
-            }
-        }
+function validateSearch() {
+    var keyword = $("#keywordInput").val().trim();
+    if (keyword === "") {
+        $("#errorMessage").show();
+        return;
+    }
 
-        function showCustomerDetail(cust_sn) {
-            window.location.href = "/customer/detail/" + cust_sn;
+    $.ajax({
+        url: $("#searchForm").attr('action'),
+        type: $("#searchForm").attr('method'),
+        data: $("#searchForm").serialize(),
+        success: function(response) {
+            // 받은 데이터로 고객 목록 섹션만 업데이트합니다.
+            $(".customerList").html($(response).find(".customerList").html());
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", error);
+            alert("조건 검색 중 오류가 발생했습니다.");
         }
+    });
+}
+function performFullSearch() {
+    $.ajax({
+        url: $("#fullSearchForm").attr('action'),
+        type: $("#fullSearchForm").attr('method'),
+        success: function(response) {
+            // 새로운 페이지로 교체
+            $("body").html(response);
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", error);
+            alert("전체 검색 중 오류가 발생했습니다.");
+        }
+    });
+}
 
-        function confirmDelete(cust_sn) {
-            if (confirm("정말로 삭제하시겠습니까? 고객정보는 삭제 후 복구가 불가합니다.")) {
-                window.location.href = "/customer/delete/" + cust_sn;
+function showCustomerDetail(cust_sn) {
+	   $.ajax({
+	        url: "/customer/detail/" + cust_sn,
+	        type: "GET",
+	        success: function(response) {
+	            // 고객 상세 정보를 받아와서 페이지에 업데이트
+	            $(".details-container").html($(response).find(".details-container").html());
+	        },
+	        error: function(xhr, status, error) {
+	            console.error("Error:", error);
+	            alert("고객 상세 정보를 불러오는 중 오류가 발생했습니다.");
+	        }
+	    });
+}
+function updateCustomerInfo() {
+    var form = $("#updateCustomerInfoForm");
+    var cust_sn = form.find('input[name="cust_sn"]').val();
+    var updatedName = form.find('input[name="cust_nm"]').val();
+
+    // 확인 창을 띄우고 사용자가 확인을 선택한 경우에만 정보를 변경
+    if (confirm("정말로 사용자 정보를 변경하시겠습니까?")) {
+        $.ajax({
+            url: form.attr('action'),
+            type: form.attr('method'),
+            data: form.serialize(),
+            success: function(response) {
+                alert("사용자 정보가 성공적으로 변경되었습니다.");
+                
+                // 해당 사용자의 라디오 버튼 텍스트 업데이트
+                $('input[name="customerRadio"][value="' + cust_sn + '"]').siblings('span').text(updatedName);
+
+                // 검색 결과 목록에서도 변경된 이름 업데이트
+                $('.customerList input[value="' + cust_sn + '"]').siblings('span').text(updatedName);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error:", error);
+                alert("사용자 정보 변경 중 오류가 발생했습니다.");
             }
-        }
-       
+        });
+    }
+}
 
-    </script>
+
+function confirmDelete(cust_sn) {
+    if (confirm("정말로 삭제하시겠습니까? 고객정보는 삭제 후 복구가 불가합니다.")) {
+        // AJAX를 통해 삭제 요청을 서버로 전송
+        $.ajax({
+            url: "/customer/delete/" + cust_sn,
+            type: "POST",
+            success: function(response) {
+                // 삭제 성공 시 페이지 업데이트 또는 사용자 피드백 처리
+                // 예: 성공 메시지 표시 또는 삭제된 항목을 리스트에서 제거
+            },
+            error: function(xhr, status, error) {
+                console.error("Error:", error);
+            }
+        });
+    }
+}
+</script>
 </head>
 <body>
+	<div class="topBar">
+		<span class="head">고객정보 관리</span> <span><a href="#"
+			class="close-button">X</a></span>
+	</div>
 	<div class="container">
-
-		<div class="search-container">
-			<div class="search">
+		<div class="section">
+			<div class="select_customer">
+				<h4 class="font1">고객성명 :</h4>
 				<br>
-				<h4>고객 검색</h4>
 				<form id="searchForm"
 					action="<c:url value='/customer/searchCustomerConfirm'></c:url>"
 					name="search_customer_confirm" method="get">
-					<input id="keywordInput" type="text" name="keyword" value="">
-					<br> <input type="button" value="Search"
-						onclick="validateSearch()"> <span id="errorMessage"
-						style="color: red; display: none;">검색어를 입력하세요.</span>
+					<input id="keywordInput" type="text" name="keyword" value=""
+						class="inputtext"><br> <br>
+					<button type="button" class="search_btn" onclick="validateSearch()">조건검색</button>
+					<span id="errorMessage" style="color: red; display: none;">검색어를
+						입력하세요.</span>
 				</form>
+
 				<br>
-				<form action="<c:url value='/customer/allCustomers'></c:url>"
-					name="search_all_customers" method="get">
-					<input type="submit" value="전체검색">
+				<form id="fullSearchForm"
+					action="<c:url value='/customer/allCustomers'></c:url>"
+					method="get">
+					<button type="button" class="search_btn"
+						onclick="performFullSearch()">전체검색</button>
 				</form>
-				<br>
+
+
 				<c:if test="${not empty customerList}">
 					<h4>검색 결과</h4>
-					<ul>
-						<c:forEach var="customer" items="${customerList}">
-							<li><a href="javascript:void(0);"
-								onclick="showCustomerDetail(${customer.cust_sn})">
-									${customer.cust_nm} </a></li>
-						</c:forEach>
-					</ul>
+					<!-- 각 고객에 대한 라디오 버튼 생성 -->
+					<form id="customerRadioForm">
+						<div class="customerList">
+							<c:forEach var="customer" items="${customerList}">
+								<label> <input type="radio" name="customerRadio"
+									value="${customer.cust_sn}"
+									onclick="showCustomerDetail(${customer.cust_sn})">
+									${customer.cust_nm}
+								</label>
+								<br>
+							</c:forEach>
+						</div>
+					</form>
 				</c:if>
 			</div>
 		</div>
-
-		<!-- 수정 폼 -->
-		<div class="details-container">
-			<div class="details">
-				<h4>고객 상세 정보</h4>
-				<c:if test="${not empty message}">
-					<div style="color: green; font-weight: bold;">${message}</div>
-				</c:if>
-				<br>
-				<form action="<c:url value='/customer/updateCustomerInfo'></c:url>"
-					method="post">
-					<c:if test="${not empty customer}">
-						<input type="hidden" name="cust_sn" value="${customer.cust_sn}">
-						<label for="frst_reg_dt">작성일자:</label>
-						<input type="text" id="frst_reg_dt" name="frst_reg_dt"
-							value="${customer.frst_reg_dt}" readonly disabled>
-						<br>
-						<label for="cust_nm">이름:</label>
-						<input type="text" id="cust_nm" name="cust_nm"
-							value="${customer.cust_nm}">
-						<br>
-						<label for="pridtf_no">주민번호:</label>
-						<input type="text" id="pridtf_no" name="pridtf_no"
-							value="${customer.pridtf_no}">
-						<br>
-						<label for="eml_addr">이메일:</label>
-						<input type="text" id="eml_addr" name="eml_addr"
-							value="${customer.eml_addr}">
-						<br>
-						<label for="home_telno">전화번호:</label>
-						<input type="text" id="home_telno" name="home_telno"
-							value="${customer.home_telno}">
-						<br>
-						<label for="mbl_telno">핸드폰 번호:</label>
-						<input type="text" id="mbl_telno" name="mbl_telno"
-							value="${customer.mbl_telno}">
-						<br>
-						<label for="cr_nm">직업:</label>
-						<input type="text" id="cr_nm" name="cr_nm"
-							value="${customer.cr_nm}">
-						<br>
-						<label for="road_nm_addr">주소:</label>
-						<input type="text" id="road_nm_addr" name="road_nm_addr"
-							value="${customer.road_nm_addr}">
-						<br>
-						<input type="submit" value="사용자 정보 변경">
-						<br>
-						<input type="button" value="삭제"
-							onclick="confirmDelete(${customer.cust_sn})">
+		<div class="section">
+			<div class="details-container" id="customerDetailContainer">
+				<div class="details">
+					<h4>고객 상세 정보</h4>
+					<c:if test="${not empty message}">
+						<div style="color: green; font-weight: bold;">${message}</div>
 					</c:if>
-				</form>
-				<br>
-				<form action="<c:url value='/customer/updatePicInfo'></c:url>"
-					method="post" id="updatePicForm">
-					<c:if test="${not empty customer}">
-						<input type="hidden" name="cust_sn" value="${customer.cust_sn}">
-						<input type="hidden" name="cust_sn" value="${customer.pic_sn_vl}">
-						<!-- 기존 관리자 정보 -->
-						<label for="pic_name"> 관리자 이름:</label>
-						<input type="text" id="pic_name" name="pic_name"
-							value="${customer.pic_name}">
-						<input type="submit" value="관리자 정보 변경">
-						<label for="tkcg_dept_nm">부서:</label>
-						<input type="text" id="tkcg_dept_nm" name="tkcg_dept_nm"
-							value="${customer.tkcg_dept_nm}">
-						<label for="pic_position">직위:</label>
-						<input type="text" id="pic_position" name="pic_position"
-							value="${customer.pic_position}">
-						<label for="pic_phone">연락처:</label>
-						<input type="text" id="pic_phone" name="pic_phone"
-							value="${customer.pic_phone}">
-					</c:if>
-
-				</form>
+					<br>
+					<form id="updateCustomerInfoForm"
+						action="<c:url value='/customer/updateCustomerInfo'></c:url>"
+						method="post">
+						<c:if test="${not empty customer}">
+							<div class="details-text">
+								<input type="hidden" name="cust_sn" value="${customer.cust_sn}">
+								<label for="frst_reg_dt" class="details-text-col">작성일자:</label>
+								<input type="text" id="frst_reg_dt" name="frst_reg_dt"
+									value="${customer.frst_reg_dt}" readonly disabled>
+							</div>
+							<div class="details-text">
+								<label for="cust_nm" class="details-text-col">이름:</label> <input
+									type="text" id="cust_nm" name="cust_nm"
+									value="${customer.cust_nm}">
+							</div>
+							<div class="details-text">
+								<label for="pridtf_no" class="details-text-col">주민번호:</label> <input
+									type="text" id="pridtf_no" name="pridtf_no"
+									value="${customer.pridtf_no}">
+							</div>
+							<div class="details-text">
+								<label for="eml_addr" class="details-text-col">이메일:</label> <input
+									type="text" id="eml_addr" name="eml_addr"
+									value="${customer.eml_addr}">
+							</div>
+							<div class="details-text">
+								<label for="home_telno" class="details-text-col">전화번호:</label> <input
+									type="text" id="home_telno" name="home_telno"
+									value="${customer.home_telno}">
+							</div>
+							<div class="details-text">
+								<label for="mbl_telno" class="details-text-col">핸드폰 번호:</label>
+								<input type="text" id="mbl_telno" name="mbl_telno"
+									value="${customer.mbl_telno}">
+							</div>
+							<div class="details-text">
+								<label for="cr_nm" class="details-text-col">직업:</label> <input
+									type="text" id="cr_nm" name="cr_nm" value="${customer.cr_nm}">
+							</div>
+							<div class="details-text">
+								<label for="road_nm_addr" class="details-text-col">주소:</label> <input
+									type="text" id="road_nm_addr" name="road_nm_addr"
+									value="${customer.road_nm_addr}">
+							</div>
+							<br>
+						</c:if>
+					</form>
+					<br>
+					<div>
+						<form action="<c:url value='/customer/updatePicInfo'></c:url>"
+							method="post" id="updatePicForm">
+							<c:if test="${not empty customer}">
+								<input type="hidden" name="cust_sn" value="${customer.cust_sn}">
+								<input type="hidden" name="cust_sn"
+									value="${customer.pic_sn_vl}">
+								<!-- 기존 관리자 정보 -->
+								<div class="details-text">
+									<label for="pic_name" class="details-text-col"> 관리자 이름:</label>
+									<div class="input-with-button">
+										<input type="text" id="pic_name" name="pic_name"
+											value="${customer.pic_name}">
+										<button type="submit">버튼</button>
+									</div>
+								</div>
+								<div class="details-text">
+									<label for="tkcg_dept_nm" class="details-text-col">부서:</label>
+									<input type="text" id="tkcg_dept_nm" name="tkcg_dept_nm"
+										value="${customer.tkcg_dept_nm}">
+								</div>
+								<div class="details-text">
+									<label for="pic_position" class="details-text-col">직위:</label>
+									<input type="text" id="pic_position" name="pic_position"
+										value="${customer.pic_position}">
+								</div>
+								<div class="details-text">
+									<label for="pic_phone" class="details-text-col">연락처:</label> <input
+										type="text" id="pic_phone" name="pic_phone"
+										value="${customer.pic_phone}">
+								</div>
+							</c:if>
+						</form>
+					</div>
+				</div>
 			</div>
 		</div>
-		<div class="consultation-container">
-			<h4>고객 상담 내역</h4>
-			
+		<div class="section">
+
+			<h4 class="font1">상담 내역 :</h4>
+			<div class="consult">
+				<c:choose>
+					<c:when test="${not empty consultList}">
+						<ul>
+							<c:forEach var="consultation" items="${consultList}">
+								<li>${consultation.cons_date}</li>
+								<li>${consultation.consultation}</li>
+							</c:forEach>
+						</ul>
+					</c:when>
+					<c:otherwise>
+						<!-- 상담 내역이 없는 경우 -->
+						<p>상담 내역이 없습니다.</p>
+					</c:otherwise>
+				</c:choose>
+
 		</div>
+		<br>
+		<div class="buttons">
+			<button class="btn_blue">등록</button>
+			<button class="btn_blue" onclick="updateCustomerInfo()">변경</button>
+			<button class="btn_blue" onclick="confirmDelete(${customer.cust_sn})">삭제</button>
+			<button class="btn_blue">신규</button>
+			<br> <br>
+			<button class="btn_yellow">고객조회</button>
+			<button class="nones"></button>
+			<button class="nones"></button>
+			<button class="btn_blue">종료</button>
+		</div>
+	</div>
 	</div>
 </body>
 </html>
-
