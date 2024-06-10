@@ -9,28 +9,28 @@
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    function validateSearch() {
-        var keyword = document.getElementById("keywordInput").value.trim();
-        if (keyword === "") {
-            document.getElementById("errorMessage").style.display = "inline";
-        } else {
-            document.getElementById("errorMessage").style.display = "none";
-            document.getElementById("searchForm").submit();
-        }
-    }
+//초기에는 상담 내역이 숨겨져 있도록 설정
+$(document).ready(function() {
+    $('.consultation-container').hide();
+});
 
-    function showCustomerDetail(cust_sn) {
-        $.get('/customer/detail/' + cust_sn, function(data) {
-            var detailsHtml = $(data).find('.details').html();
-            $('.details-container .details').html(detailsHtml);
-        });
+function validateSearch() {
+    var keyword = document.getElementById("keywordInput").value.trim();
+    if (keyword === "") {
+        document.getElementById("errorMessage").style.display = "inline";
+    } else {
+        document.getElementById("errorMessage").style.display = "none";
+        document.getElementById("searchForm").submit();
     }
+}
 
-    function confirmDelete(cust_sn) {
-        if (confirm("정말로 삭제하시겠습니까? 고객정보는 삭제 후 복구가 불가합니다.")) {
-            window.location.href = "/customer/delete/" + cust_sn;
-        }
-    }
+function showCustomerDetail(cust_sn) {
+    $.get('/customer/detail/' + cust_sn, function(data) {
+        var detailsHtml = $(data).find('.details').html();
+        $('.details-container .details').html(detailsHtml);
+        $('.consultation-container').show(); // 상담 내역 표시
+    });
+}
    
 
 </script>
@@ -167,9 +167,8 @@
 					</c:if>
 
 				</form>
+				<div><h4>고객 상담 내역</h4>
 				<div class="consultation-container">
-					<h4>고객 상담 내역</h4>
-					
 					<c:choose>
 						<c:when test="${not empty consultList}">
 							<ul>
@@ -184,6 +183,7 @@
 							<p>상담 내역이 없습니다.</p>
 						</c:otherwise>
 					</c:choose>
+				</div>
 				</div>
 			</div>
 		</div>
