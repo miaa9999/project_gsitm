@@ -6,6 +6,36 @@
 <head>
 <meta charset="UTF-8">
 <title>Customer Management</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    function validateSearch() {
+        var keyword = document.getElementById("keywordInput").value.trim();
+        if (keyword === "") {
+            document.getElementById("errorMessage").style.display = "inline";
+        } else {
+            document.getElementById("errorMessage").style.display = "none";
+            document.getElementById("searchForm").submit();
+        }
+    }
+
+    function showCustomerDetail(cust_sn) {
+        $.get('/customer/detail/' + cust_sn, function(data) {
+            var detailsHtml = $(data).find('.details').html();
+            $('.details-container .details').html(detailsHtml);
+        });
+    }
+
+    function confirmDelete(cust_sn) {
+        if (confirm("정말로 삭제하시겠습니까? 고객정보는 삭제 후 복구가 불가합니다.")) {
+            window.location.href = "/customer/delete/" + cust_sn;
+        }
+    }
+   
+
+</script>
+
+
 <style>
 .container {
 	display: flex;
@@ -26,55 +56,8 @@
 	display: flex;
 	flex-direction: column;
 }
-
-.input-with-button {
-	position: relative;
-	display: inline-block;
-}
-
-.input-with-button input[type="text"] {
-	padding-right: 60px; /* 버튼이 들어갈 공간 확보 */
-}
-
-.input-with-button button {
-	position: absolute;
-	right: 0;
-	top: 0;
-	height: 100%;
-}
 </style>
-<script>
-        function validateSearch() {
-            var keyword = document.getElementById("keywordInput").value.trim();
-            if (keyword === "") {
-                document.getElementById("errorMessage").style.display = "inline";
-            } else {
-                document.getElementById("errorMessage").style.display = "none";
-                document.getElementById("searchForm").submit();
-            }
-        }
-        function validatePicNameSearch() {
-            var new_pic_name = document.getElementById("new_pic_name").value.trim();
-            if (new_pic_name === "") {
-                document.getElementById("errorMessage").style.display = "inline";
-            } else {
-                document.getElementById("errorMessage").style.display = "none";
-                document.getElementById("findPicName").submit();
-            }
-        }
 
-        function showCustomerDetail(cust_sn) {
-            window.location.href = "/customer/detail/" + cust_sn;
-        }
-
-        function confirmDelete(cust_sn) {
-            if (confirm("정말로 삭제하시겠습니까? 고객정보는 삭제 후 복구가 불가합니다.")) {
-                window.location.href = "/customer/delete/" + cust_sn;
-            }
-        }
-       
-
-    </script>
 </head>
 <body>
 	<div class="container">
@@ -158,6 +141,7 @@
 						<br>
 						<input type="button" value="삭제"
 							onclick="confirmDelete(${customer.cust_sn})">
+
 					</c:if>
 				</form>
 				<br>
@@ -183,12 +167,28 @@
 					</c:if>
 
 				</form>
+				<div class="consultation-container">
+					<h4>고객 상담 내역</h4>
+					
+					<c:choose>
+						<c:when test="${not empty consultList}">
+							<ul>
+								<c:forEach var="consultation" items="${consultList}">
+									<li>${consultation.cons_date}</li>
+									<li>${consultation.consultation}</li>
+								</c:forEach>
+							</ul>
+						</c:when>
+						<c:otherwise>
+							<!-- 상담 내역이 없는 경우 -->
+							<p>상담 내역이 없습니다.</p>
+						</c:otherwise>
+					</c:choose>
+				</div>
 			</div>
 		</div>
-		<div class="consultation-container">
-			<h4>고객 상담 내역</h4>
-			
-		</div>
+
+
 	</div>
 </body>
 </html>
