@@ -43,6 +43,7 @@ function submitNewCustomerForm() {
 function toggleNewCustomerForm() {
     var newCustomerForm = document.getElementById("newCustomer");
     newCustomerForm.style.display = "block";
+    $(".customerList").hide();
     $(".consult").hide(); 
     $(".details-container").hide();
     $(".newCustomer").show();
@@ -86,7 +87,7 @@ function performFullSearch() {
 }
 
 function showCustomerDetail(cust_sn) {
-
+	$(".newCustomerForm").hide();
 	   $.ajax({
 	        url: "/customer/detail/" + cust_sn,
 	        type: "GET",
@@ -156,22 +157,13 @@ function updatePicInfo() {
 	        });
 	    }
 }
-function confirmDelete(cust_sn) {
+function confirmDelete() {
+	 var cust_sn = $('input[type="radio"][name="customerRadio"]:checked').val();
     if (confirm("정말로 삭제하시겠습니까? 고객정보는 삭제 후 복구가 불가합니다.")) {
-        // AJAX를 통해 삭제 요청을 서버로 전송
-        $.ajax({
-            url: "/customer/delete/" + cust_sn,
-            type: "POST",
-            success: function(response) {
-                // 삭제 성공 시 페이지 업데이트 또는 사용자 피드백 처리
-            	 alert("사용자 정보가 삭제되었습니다!");
-            },
-            error: function(xhr, status, error) {
-                console.error("Error:", error);
-            }
-        });
+        window.location.href = "/customer/delete/" + cust_sn;
     }
 }
+
 </script>
 </head>
 <body>
@@ -311,55 +303,57 @@ function confirmDelete(cust_sn) {
 								</div>
 							</c:if>
 							<br>
+
 						</form>
-						</div>
-			
-						<br>
 					</div>
-				
+
+					<br>
+					<%-- 					<button class="btn_blue" onclick="confirmDelete('${customer.cust_sn}')">삭제</button> --%>
+				</div>
+
 
 			</div>
 
 			<div class="Newsection">
-							<div class="newCustomer" id="newCustomer" style="display: none;">
-								<div class="newCustomer">
-									<h4>신규 고객 등록</h4>
+				<div class="newCustomer" id="newCustomer" style="display: none;">
+					<div class="newCustomer">
+						<h4>신규 고객 등록</h4>
 						<form method="post"
 							action="<c:url value='/customer/addCustomer'></c:url>">
 							<div class="details-text">
 								<label for="new_cust_nm" class="details-text-col">이름:</label> <input
-									type="text" id="cust_nm" name="new_cust_nm">
+									type="text" name="new_cust_nm">
 							</div>
 							<div class="details-text">
 								<label for="new_pridtf_no" class="details-text-col">주민번호:</label>
-								<input type="text" id="pridtf_no" name="new_pridtf_no">
+								<input type="text" name="new_pridtf_no">
 							</div>
 							<div class="details-text">
 								<label for="new_eml_addr" class="details-text-col">이메일:</label>
-								<input type="text" id="eml_addr" name="new_eml_addr">
+								<input type="text" name="new_eml_addr">
 							</div>
 							<div class="details-text">
 								<label for="new_home_telno" class="details-text-col">전화번호:</label>
-								<input type="text" id="home_telno" name="new_home_telno">
+								<input type="text" name="new_home_telno">
 							</div>
 							<div class="details-text">
 								<label for="new_mbl_telno" class="details-text-col">핸드폰
-									번호:</label> <input type="text" id="mbl_telno" name="new_mbl_telno">
+									번호:</label> <input type="text" name="new_mbl_telno">
 							</div>
 							<div class="details-text">
 								<label for="new_cr_nm" class="details-text-col">직업:</label> <input
-									type="text" id="cr_nm" name="new_cr_nm">
+									type="text" name="new_cr_nm">
 							</div>
 							<div class="details-text">
 								<label for="new_road_nm_addr" class="details-text-col">주소:</label>
-								<input type="text" id="road_nm_addr" name="new_road_nm_addr">
+								<input type="text" name="new_road_nm_addr">
 							</div>
 							<br>
-							
+
 						</form>
 					</div>
-							</div>
-						</div>
+				</div>
+			</div>
 		</div>
 		<div class="section">
 
@@ -385,10 +379,9 @@ function confirmDelete(cust_sn) {
 			<div class="buttons">
 				<button class="btn_blue" onclick="submitNewCustomerForm()">등록</button>
 				<button class="btn_blue" onclick="updateCustomerInfo()">변경</button>
-				<button class="btn_blue"
-					onclick="confirmDelete(${customer.cust_sn})">삭제</button>
+				<button class="btn_blue"onclick="confirmDelete()">삭제</button>
 				<button class="btn_blue new" onclick="toggleNewCustomerForm()">신규</button>
-				<br> <br>
+				<br><br>
 				<button class="btn_yellow">고객조회</button>
 				<button class="nones"></button>
 				<button class="nones"></button>
