@@ -10,11 +10,16 @@
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+$(document).ready(function() {
+    // 초기 로드 시 삭제 버튼 비활성화
+    $("#deleteButton").prop("disabled", true);
 
+    // 라디오 버튼 클릭 시 삭제 버튼 활성화
+    $("input[name='customerRadio']").on("change", function() {
+        $("#deleteButton").prop("disabled", false);
+    });
+});
 function submitNewCustomerForm() {
-    // 폼 데이터를 수집합니다.           
-//     var registerButton = document.getElementById("registerButton");
-//     registerButton.disabled = true;
     var formData = {
         new_cust_nm: $("#new_cust_nm").val(),
         new_pridtf_no: $("#new_pridtf_no").val(),
@@ -389,11 +394,10 @@ function confirmDelete() {
 			<br>
 
 			<div class="buttons">
-<!-- 				<button class="btn_blue"  onclick="submitNewCustomerForm()" disabled="disabled">등록</button> -->
 				 <button class="btn_blue" id="disableRegisterButton"  style="display: inline;" disabled>등록</button>
 				  <button class="btn_blue" id="ableRegisterButton"  onclick="submitNewCustomerForm()" style="display: none;">등록</button>
 				<button class="btn_blue" onclick="updateCustomerInfo()">변경</button>
-				<button class="btn_blue"onclick="confirmDelete()">삭제</button>
+				<button class="btn_blue"onclick="confirmDelete()" id="deleteButton">삭제</button>
 				<button class="btn_blue new" id="insertNewCustomer"onclick="toggleNewCustomerForm()">신규</button>
 				<br><br>
 				<button class="btn_yellow">고객조회</button>
