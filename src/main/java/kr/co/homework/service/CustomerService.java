@@ -54,6 +54,10 @@ public class CustomerService {
 		return mapper.consultFindByCustSn(cust_sn);
 	}
 
+	public int addCustomer(kdt_cust_info_basc_Dto customerDto) {
+		return mapper.addCustomer(customerDto);
+	}
+
 
 
 

@@ -10,7 +10,15 @@
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+function toggleNewCustomerForm() {
+    var newCustomerForm = document.getElementById("newCustomer");
+    newCustomerForm.style.display = "block";
+    $(".consult").hide(); 
+    $(".details-container").hide();
+    $(".newCustomer").show();
+}
 function validateSearch() {
+	$(".newCustomerForm").hide();
     var keyword = $("#keywordInput").val().trim();
     if (keyword === "") {
         $("#errorMessage").show();
@@ -32,6 +40,7 @@ function validateSearch() {
     });
 }
 function performFullSearch() {
+	$(".newCustomerForm").hide();
     $.ajax({
         url: $("#fullSearchForm").attr('action'),
         type: $("#fullSearchForm").attr('method'),
@@ -47,10 +56,12 @@ function performFullSearch() {
 }
 
 function showCustomerDetail(cust_sn) {
+
 	   $.ajax({
 	        url: "/customer/detail/" + cust_sn,
 	        type: "GET",
 	        success: function(response) {
+	        	$(".newCustomer").hide(); // 폼 숨기기
 	            // 고객 상세 정보를 받아와서 페이지에 업데이트
 	            $(".details-container").html($(response).find(".details-container").html());
 	            $(".consult").html($(response).find(".consult").html());
@@ -237,7 +248,6 @@ function confirmDelete(cust_sn) {
 					</form>
 					<br>
 					<div>
-
 						<form action="<c:url value='/customer/updatePicInfo'></c:url>"
 							method="post" id="updatePicForm">
 							<c:if test="${not empty customer}">
@@ -271,14 +281,55 @@ function confirmDelete(cust_sn) {
 								</div>
 							</c:if>
 							<br>
-
 						</form>
+						</div>
+			
 						<br>
 					</div>
-				</div>
+				
 
 			</div>
 
+			<div class="Newsection">
+							<div class="newCustomer" id="newCustomer" style="display: none;">
+								<div class="newCustomer">
+									<h4>신규 고객 등록</h4>
+						<form method="post"
+							action="<c:url value='/customer/addCustomer'></c:url>">
+							<div class="details-text">
+								<label for="new_cust_nm" class="details-text-col">이름:</label> <input
+									type="text" id="cust_nm" name="new_cust_nm">
+							</div>
+							<div class="details-text">
+								<label for="new_pridtf_no" class="details-text-col">주민번호:</label>
+								<input type="text" id="pridtf_no" name="new_pridtf_no">
+							</div>
+							<div class="details-text">
+								<label for="new_eml_addr" class="details-text-col">이메일:</label>
+								<input type="text" id="eml_addr" name="new_eml_addr">
+							</div>
+							<div class="details-text">
+								<label for="new_home_telno" class="details-text-col">전화번호:</label>
+								<input type="text" id="home_telno" name="new_home_telno">
+							</div>
+							<div class="details-text">
+								<label for="new_mbl_telno" class="details-text-col">핸드폰
+									번호:</label> <input type="text" id="mbl_telno" name="new_mbl_telno">
+							</div>
+							<div class="details-text">
+								<label for="new_cr_nm" class="details-text-col">직업:</label> <input
+									type="text" id="cr_nm" name="new_cr_nm">
+							</div>
+							<div class="details-text">
+								<label for="new_road_nm_addr" class="details-text-col">주소:</label>
+								<input type="text" id="road_nm_addr" name="new_road_nm_addr">
+							</div>
+							<br>
+							<input type="submit" value="등록" />
+						</form>
+					</div>
+							</div>
+						</div>
 		</div>
 		<div class="section">
 
@@ -306,7 +357,7 @@ function confirmDelete(cust_sn) {
 				<button class="btn_blue" onclick="updateCustomerInfo()">변경</button>
 				<button class="btn_blue"
 					onclick="confirmDelete(${customer.cust_sn})">삭제</button>
-				<button class="btn_blue">신규</button>
+				<button class="btn_blue new" onclick="toggleNewCustomerForm()">신규</button>
 				<br> <br>
 				<button class="btn_yellow">고객조회</button>
 				<button class="nones"></button>

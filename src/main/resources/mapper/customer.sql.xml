@@ -83,5 +83,13 @@
 		WHERE
 		cust.cust_sn = #{customerDto.cust_sn}
 	</update>
+	<insert id="addCustomer" parameterType="customerDto">
+		INSERT INTO
+		kdt_cust_info_basc(cust_nm,pridtf_no,eml_addr,home_telno,mbl_telno,
+		cr_nm,road_nm_addr,frst_reg_dt,last_mdfcn_dt)
+		VALUES
+		(#{customerDto.cust_nm},#{customerDto.pridtf_no},#{customerDto.eml_addr},#{customerDto.home_telno},#{customerDto.mbl_telno},
+		#{customerDto.cr_nm},#{customerDto.road_nm_addr},CURRENT_DATE,CURRENT_DATE)
+	</insert>
 
 </mapper>

@@ -31,6 +31,8 @@ public interface CustomerMapper {
 
 	List<kdt_consultation_Dto> consultFindByCustSn(@Param("cust_sn")Long cust_sn);
 
+	int addCustomer(@Param("customerDto")kdt_cust_info_basc_Dto customerDto);
+
 
 
 }
