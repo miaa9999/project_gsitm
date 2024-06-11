@@ -53,6 +53,7 @@ function showCustomerDetail(cust_sn) {
 	        success: function(response) {
 	            // 고객 상세 정보를 받아와서 페이지에 업데이트
 	            $(".details-container").html($(response).find(".details-container").html());
+	            $(".consult").html($(response).find(".consult").html());
 	        },
 	        error: function(xhr, status, error) {
 	            console.error("Error:", error);
@@ -97,7 +98,7 @@ function confirmDelete(cust_sn) {
             type: "POST",
             success: function(response) {
                 // 삭제 성공 시 페이지 업데이트 또는 사용자 피드백 처리
-                // 예: 성공 메시지 표시 또는 삭제된 항목을 리스트에서 제거
+            	 alert("사용자 정보가 삭제되었습니다!");
             },
             error: function(xhr, status, error) {
                 console.error("Error:", error);
@@ -242,44 +243,50 @@ function confirmDelete(cust_sn) {
 										value="${customer.pic_phone}">
 								</div>
 							</c:if>
+							<br>
+
 						</form>
+						<br>
 					</div>
 				</div>
+
 			</div>
+
 		</div>
 		<div class="section">
 
 			<h4 class="font1">상담 내역 :</h4>
-			<div class="consult">
-				<c:choose>
-					<c:when test="${not empty consultList}">
-						<ul>
-							<c:forEach var="consultation" items="${consultList}">
-								<li>${consultation.cons_date}</li>
-								<li>${consultation.consultation}</li>
-							</c:forEach>
-						</ul>
-					</c:when>
-					<c:otherwise>
-						<!-- 상담 내역이 없는 경우 -->
-						<p>상담 내역이 없습니다.</p>
-					</c:otherwise>
-				</c:choose>
+			<div class="consult" id="customerDetailContainer">
+					<c:choose>
+						<c:when test="${not empty consultList}">
+							<ul>
+								<c:forEach var="consultation" items="${consultList}">
+									<li>${consultation.cons_date}:${consultation.consultation}</li>
+								</c:forEach>
 
+							</ul>
+						</c:when>
+						<c:otherwise>
+							<!-- 상담 내역이 없는 경우 -->
+							<p>상담 내역이 없습니다.</p>
+						</c:otherwise>
+					</c:choose>
+			</div>
+			<br>
+
+			<div class="buttons">
+				<button class="btn_blue">등록</button>
+				<button class="btn_blue" onclick="updateCustomerInfo()">변경</button>
+				<button class="btn_blue"
+					onclick="confirmDelete(${customer.cust_sn})">삭제</button>
+				<button class="btn_blue">신규</button>
+				<br> <br>
+				<button class="btn_yellow">고객조회</button>
+				<button class="nones"></button>
+				<button class="nones"></button>
+				<button class="btn_blue">종료</button>
+			</div>
 		</div>
-		<br>
-		<div class="buttons">
-			<button class="btn_blue">등록</button>
-			<button class="btn_blue" onclick="updateCustomerInfo()">변경</button>
-			<button class="btn_blue" onclick="confirmDelete(${customer.cust_sn})">삭제</button>
-			<button class="btn_blue">신규</button>
-			<br> <br>
-			<button class="btn_yellow">고객조회</button>
-			<button class="nones"></button>
-			<button class="nones"></button>
-			<button class="btn_blue">종료</button>
-		</div>
-	</div>
 	</div>
 </body>
 </html>
