@@ -10,6 +10,36 @@
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+function submitNewCustomerForm() {
+    // 폼 데이터를 수집합니다.
+    var formData = {
+        new_cust_nm: $("#cust_nm").val(),
+        new_pridtf_no: $("#pridtf_no").val(),
+        new_eml_addr: $("#eml_addr").val(),
+        new_home_telno: $("#home_telno").val(),
+        new_mbl_telno: $("#mbl_telno").val(),
+        new_cr_nm: $("#cr_nm").val(),
+        new_road_nm_addr: $("#road_nm_addr").val()
+    };
+
+    // AJAX를 사용하여 폼 데이터를 서버로 전송합니다.
+    $.ajax({
+        url: "<c:url value='/customer/addCustomer'></c:url>",
+        type: "POST",
+        data: formData,
+        success: function(response) {
+            // 서버로부터 응답을 받은 경우 처리할 내용을 추가합니다.
+            alert("사용자 등록이 완료되었습니다.");
+            // 사용자 등록이 성공하면 원하는 동작을 수행합니다.
+        },
+        error: function(xhr, status, error) {
+            // 오류가 발생한 경우 오류를 처리합니다.
+            console.error("Error:", error);
+            alert("사용자 등록 중 오류가 발생했습니다.");
+        }
+    });
+}
+
 function toggleNewCustomerForm() {
     var newCustomerForm = document.getElementById("newCustomer");
     newCustomerForm.style.display = "block";
@@ -325,7 +355,7 @@ function confirmDelete(cust_sn) {
 								<input type="text" id="road_nm_addr" name="new_road_nm_addr">
 							</div>
 							<br>
-							<input type="submit" value="등록" />
+							
 						</form>
 					</div>
 							</div>
@@ -353,7 +383,7 @@ function confirmDelete(cust_sn) {
 			<br>
 
 			<div class="buttons">
-				<button class="btn_blue">등록</button>
+				<button class="btn_blue" onclick="submitNewCustomerForm()">등록</button>
 				<button class="btn_blue" onclick="updateCustomerInfo()">변경</button>
 				<button class="btn_blue"
 					onclick="confirmDelete(${customer.cust_sn})">삭제</button>

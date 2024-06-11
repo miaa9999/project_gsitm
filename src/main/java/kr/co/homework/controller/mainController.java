@@ -36,9 +36,8 @@ public class mainController {
 	public String customerInfoPage() {
 		return "customer/customerInfoPage";
 	}
-	
 
-	// 일단 수정/삭제 돌아가는 검색(이름만 검색)
+	//  검색(이름으로만 검색)
 
 	@GetMapping("customer/searchCustomerConfirm")
 	public String searchCustomerConfirm(@RequestParam("keyword") String keyword, Model model) {
@@ -61,8 +60,8 @@ public class mainController {
 		Map<String, Object> customerDetail = customerService.getCustomerDetail(cust_sn);
 		List<kdt_consultation_Dto> consultList = customerService.consultFindByCustSn(cust_sn);
 		System.out.println(consultList);
-        //상담내역 조회하기
-		model.addAttribute("consultList",consultList);
+		// 상담내역 조회하기
+		model.addAttribute("consultList", consultList);
 		// 조회된 고객 정보를 모델에 추가
 		model.addAttribute("customer", customerDetail);
 
@@ -91,18 +90,15 @@ public class mainController {
 		customerService.deleteCustomer(cust_sn);
 		return "/mainPage";
 	}
-	
-	//관리자 신규 등록
+
+	// 관리자 신규 등록
 	@PostMapping("customer/addCustomer")
-	public String addCustomer(@RequestParam("new_cust_nm")String new_cust_nm,
-			@RequestParam("new_pridtf_no")String new_pridtf_no,
-			@RequestParam("new_eml_addr")String new_eml_addr,
-			@RequestParam("new_home_telno")String new_home_telno,
-			@RequestParam("new_mbl_telno")String new_mbl_telno,
-			
-			@RequestParam("new_cr_nm")String new_cr_nm,
-			@RequestParam("new_road_nm_addr")String new_road_nm_addr) {
-		
+	public String addCustomer(@RequestParam("new_cust_nm") String new_cust_nm,
+			@RequestParam("new_pridtf_no") String new_pridtf_no, @RequestParam("new_eml_addr") String new_eml_addr,
+			@RequestParam("new_home_telno") String new_home_telno, @RequestParam("new_mbl_telno") String new_mbl_telno,
+
+			@RequestParam("new_cr_nm") String new_cr_nm, @RequestParam("new_road_nm_addr") String new_road_nm_addr) {
+
 		kdt_cust_info_basc_Dto customerDto = new kdt_cust_info_basc_Dto();
 		customerDto.setCust_nm(new_cust_nm);
 		customerDto.setPridtf_no(new_pridtf_no);
@@ -111,13 +107,11 @@ public class mainController {
 		customerDto.setMbl_telno(new_mbl_telno);
 		customerDto.setCr_nm(new_cr_nm);
 		customerDto.setRoad_nm_addr(new_road_nm_addr);
-		
-		
-				System.out.println(customerDto.getBrdt());
-		// System.out.println("등독된 새 사용자: " +  customerDto.toString());
+
+		System.out.println(customerDto.getBrdt());
+		// System.out.println("등독된 새 사용자: " + customerDto.toString());
 		customerService.addCustomer(customerDto);
-		return "/mainPage";
+		return "redirect:/customerInfoPage";
 	}
-	
 
 }
