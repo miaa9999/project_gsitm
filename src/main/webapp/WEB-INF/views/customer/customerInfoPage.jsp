@@ -89,7 +89,32 @@ function updateCustomerInfo() {
     }
 }
 
-
+function updatePicInfo() {
+	  var form = $("#updatePicForm");
+	    // 확인 창을 띄우고 관리자가 확인을 선택한 경우에만 정보를 변경
+	    if (confirm("정말로 사용자 정보를 변경하시겠습니까?")) {
+	        // 폼의 submit 이벤트를 방지합니다.
+	        event.preventDefault();
+	        
+	        $.ajax({
+	            url: form.attr('action'),
+	            type: form.attr('method'),
+	            data: form.serialize(),
+	            success: function(response) {
+	                alert("관리자 정보가 성공적으로 변경되었습니다.");
+	                
+	                // 새로운 관리자 이름을 얻어옵니다.
+	                var newName = form.find('input[name="pic_name"]').val();
+	                // 새로운 관리자 이름을 DOM에서 찾아 업데이트합니다.
+	                $(".details-text #pic_name").val(newName);
+	            },
+	            error: function(xhr, status, error) {
+	                console.error("Error:", error);
+	                alert("관리자 정보 변경 중 오류가 발생했습니다.");
+	            }
+	        });
+	    }
+}
 function confirmDelete(cust_sn) {
     if (confirm("정말로 삭제하시겠습니까? 고객정보는 삭제 후 복구가 불가합니다.")) {
         // AJAX를 통해 삭제 요청을 서버로 전송
@@ -212,11 +237,12 @@ function confirmDelete(cust_sn) {
 					</form>
 					<br>
 					<div>
+
 						<form action="<c:url value='/customer/updatePicInfo'></c:url>"
 							method="post" id="updatePicForm">
 							<c:if test="${not empty customer}">
 								<input type="hidden" name="cust_sn" value="${customer.cust_sn}">
-								<input type="hidden" name="cust_sn"
+								<input type="hidden" name="pic_sn_vl"
 									value="${customer.pic_sn_vl}">
 								<!-- 기존 관리자 정보 -->
 								<div class="details-text">
@@ -224,23 +250,24 @@ function confirmDelete(cust_sn) {
 									<div class="input-with-button">
 										<input type="text" id="pic_name" name="pic_name"
 											value="${customer.pic_name}">
-										<button type="submit">버튼</button>
+										<button onclick="updatePicInfo()">변경</button>
+										<!-- 										<button type="submit">버튼</button> -->
 									</div>
 								</div>
 								<div class="details-text">
 									<label for="tkcg_dept_nm" class="details-text-col">부서:</label>
 									<input type="text" id="tkcg_dept_nm" name="tkcg_dept_nm"
-										value="${customer.tkcg_dept_nm}">
+										value="${customer.tkcg_dept_nm}" readonly disabled>
 								</div>
 								<div class="details-text">
 									<label for="pic_position" class="details-text-col">직위:</label>
 									<input type="text" id="pic_position" name="pic_position"
-										value="${customer.pic_position}">
+										value="${customer.pic_position}" readonly disabled>
 								</div>
 								<div class="details-text">
 									<label for="pic_phone" class="details-text-col">연락처:</label> <input
 										type="text" id="pic_phone" name="pic_phone"
-										value="${customer.pic_phone}">
+										value="${customer.pic_phone}" readonly disabled>
 								</div>
 							</c:if>
 							<br>
@@ -257,20 +284,20 @@ function confirmDelete(cust_sn) {
 
 			<h4 class="font1">상담 내역 :</h4>
 			<div class="consult" id="customerDetailContainer">
-					<c:choose>
-						<c:when test="${not empty consultList}">
-							<ul>
-								<c:forEach var="consultation" items="${consultList}">
-									<li>${consultation.cons_date}:${consultation.consultation}</li>
-								</c:forEach>
+				<c:choose>
+					<c:when test="${not empty consultList}">
+						<ul>
+							<c:forEach var="consultation" items="${consultList}">
+								<li>${consultation.cons_date}:${consultation.consultation}</li>
+							</c:forEach>
 
-							</ul>
-						</c:when>
-						<c:otherwise>
-							<!-- 상담 내역이 없는 경우 -->
-							<p>상담 내역이 없습니다.</p>
-						</c:otherwise>
-					</c:choose>
+						</ul>
+					</c:when>
+					<c:otherwise>
+						<!-- 상담 내역이 없는 경우 -->
+						<p>상담 내역이 없습니다.</p>
+					</c:otherwise>
+				</c:choose>
 			</div>
 			<br>
 
