@@ -314,46 +314,46 @@ function confirmDelete() {
 
 			</div>
 
-			<div class="Newsection">
-				<div class="newCustomer" id="newCustomer" style="display: none;">
-					<div class="newCustomer">
-						<h4>신규 고객 등록</h4>
+					<div class="Newsection">
+							<div class="newCustomer" id="newCustomer" style="display: none;">
+								<div class="newCustomer">
+									<h4>신규 고객 등록</h4>
 						<form method="post"
 							action="<c:url value='/customer/addCustomer'></c:url>">
 							<div class="details-text">
 								<label for="new_cust_nm" class="details-text-col">이름:</label> <input
-									type="text" name="new_cust_nm">
+									type="text" id="cust_nm" name="new_cust_nm">
 							</div>
 							<div class="details-text">
 								<label for="new_pridtf_no" class="details-text-col">주민번호:</label>
-								<input type="text" name="new_pridtf_no">
+								<input type="text" id="pridtf_no" name="new_pridtf_no">
 							</div>
 							<div class="details-text">
 								<label for="new_eml_addr" class="details-text-col">이메일:</label>
-								<input type="text" name="new_eml_addr">
+								<input type="text" id="eml_addr" name="new_eml_addr">
 							</div>
 							<div class="details-text">
 								<label for="new_home_telno" class="details-text-col">전화번호:</label>
-								<input type="text" name="new_home_telno">
+								<input type="text" id="home_telno" name="new_home_telno">
 							</div>
 							<div class="details-text">
 								<label for="new_mbl_telno" class="details-text-col">핸드폰
-									번호:</label> <input type="text" name="new_mbl_telno">
+									번호:</label> <input type="text" id="mbl_telno" name="new_mbl_telno">
 							</div>
 							<div class="details-text">
 								<label for="new_cr_nm" class="details-text-col">직업:</label> <input
-									type="text" name="new_cr_nm">
+									type="text" id="cr_nm" name="new_cr_nm">
 							</div>
 							<div class="details-text">
 								<label for="new_road_nm_addr" class="details-text-col">주소:</label>
-								<input type="text" name="new_road_nm_addr">
+								<input type="text" id="road_nm_addr" name="new_road_nm_addr">
 							</div>
 							<br>
-
+							<input type="submit" value="등록" />
 						</form>
 					</div>
-				</div>
-			</div>
+							</div>
+						</div>
 		</div>
 		<div class="section">
 
