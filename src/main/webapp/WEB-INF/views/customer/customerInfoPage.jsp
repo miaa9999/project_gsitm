@@ -308,7 +308,6 @@ function confirmDelete() {
 					</div>
 
 					<br>
-					<%-- 					<button class="btn_blue" onclick="confirmDelete('${customer.cust_sn}')">삭제</button> --%>
 				</div>
 
 
@@ -349,7 +348,7 @@ function confirmDelete() {
 								<input type="text" id="road_nm_addr" name="new_road_nm_addr">
 							</div>
 							<br>
-							<input type="submit" value="등록" />
+						
 						</form>
 					</div>
 							</div>
