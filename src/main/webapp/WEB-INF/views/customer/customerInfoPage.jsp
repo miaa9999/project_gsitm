@@ -10,16 +10,24 @@
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+$(document).ready(function() {
+    // 초기 로드 시 삭제 버튼 비활성화
+    $("#deleteButton").prop("disabled", true);
+
+    // 라디오 버튼 클릭 시 삭제 버튼 활성화
+    $("input[name='customerRadio']").on("change", function() {
+        $("#deleteButton").prop("disabled", false);
+    });
+});
 function submitNewCustomerForm() {
-    // 폼 데이터를 수집합니다.
     var formData = {
-        new_cust_nm: $("#cust_nm").val(),
-        new_pridtf_no: $("#pridtf_no").val(),
-        new_eml_addr: $("#eml_addr").val(),
-        new_home_telno: $("#home_telno").val(),
-        new_mbl_telno: $("#mbl_telno").val(),
-        new_cr_nm: $("#cr_nm").val(),
-        new_road_nm_addr: $("#road_nm_addr").val()
+        new_cust_nm: $("#new_cust_nm").val(),
+        new_pridtf_no: $("#new_pridtf_no").val(),
+        new_eml_addr: $("#new_eml_addr").val(),
+        new_home_telno: $("#new_home_telno").val(),
+        new_mbl_telno: $("#new_mbl_telno").val(),
+        new_cr_nm: $("#new_cr_nm").val(),
+        new_road_nm_addr: $("#new_road_nm_addr").val()
     };
 
     // AJAX를 사용하여 폼 데이터를 서버로 전송합니다.
@@ -41,6 +49,15 @@ function submitNewCustomerForm() {
 }
 
 function toggleNewCustomerForm() {
+	
+	 var disableButton = document.getElementById("disableRegisterButton");
+     var ableButton = document.getElementById("ableRegisterButton");
+
+     // 첫 번째 등록 버튼을 숨깁니다.
+     disableButton.style.display = "none";
+     // 두 번째 등록 버튼을 보이게 합니다.
+     ableButton.style.display = "inline";
+     
     var newCustomerForm = document.getElementById("newCustomer");
     newCustomerForm.style.display = "block";
     $(".customerList").hide();
@@ -321,34 +338,38 @@ function confirmDelete() {
 							action="<c:url value='/customer/addCustomer'></c:url>">
 							<div class="details-text">
 								<label for="new_cust_nm" class="details-text-col">이름:</label> <input
-									type="text" id="cust_nm" name="new_cust_nm">
+									type="text" id="new_cust_nm" name="new_cust_nm">
 							</div>
 							<div class="details-text">
 								<label for="new_pridtf_no" class="details-text-col">주민번호:</label>
-								<input type="text" id="pridtf_no" name="new_pridtf_no">
+								<input type="text" id="new_pridtf_no" name="new_pridtf_no">
 							</div>
 							<div class="details-text">
 								<label for="new_eml_addr" class="details-text-col">이메일:</label>
-								<input type="text" id="eml_addr" name="new_eml_addr">
+								<input type="text" id="new_eml_addr" name="new_eml_addr">
 							</div>
 							<div class="details-text">
 								<label for="new_home_telno" class="details-text-col">전화번호:</label>
-								<input type="text" id="home_telno" name="new_home_telno">
+								<input type="text" id="new_home_telno" name="new_home_telno">
 							</div>
 							<div class="details-text">
 								<label for="new_mbl_telno" class="details-text-col">핸드폰
-									번호:</label> <input type="text" id="mbl_telno" name="new_mbl_telno">
+									번호:</label> <input type="text" id="new_mbl_telno" name="new_mbl_telno">
 							</div>
 							<div class="details-text">
 								<label for="new_cr_nm" class="details-text-col">직업:</label> <input
-									type="text" id="cr_nm" name="new_cr_nm">
+									type="text" id="new_cr_nm" name="new_cr_nm">
 							</div>
 							<div class="details-text">
 								<label for="new_road_nm_addr" class="details-text-col">주소:</label>
-								<input type="text" id="road_nm_addr" name="new_road_nm_addr">
+								<input type="text" id="new_road_nm_addr" name="new_road_nm_addr">
 							</div>
 							<br>
+<<<<<<< HEAD
 						
+=======
+							
+>>>>>>> 945465413a62ff56c88e7448572c200b83cafd79
 						</form>
 					</div>
 							</div>
@@ -376,10 +397,11 @@ function confirmDelete() {
 			<br>
 
 			<div class="buttons">
-				<button class="btn_blue" onclick="submitNewCustomerForm()">등록</button>
+				 <button class="btn_blue" id="disableRegisterButton"  style="display: inline;" disabled>등록</button>
+				  <button class="btn_blue" id="ableRegisterButton"  onclick="submitNewCustomerForm()" style="display: none;">등록</button>
 				<button class="btn_blue" onclick="updateCustomerInfo()">변경</button>
-				<button class="btn_blue"onclick="confirmDelete()">삭제</button>
-				<button class="btn_blue new" onclick="toggleNewCustomerForm()">신규</button>
+				<button class="btn_blue"onclick="confirmDelete()" id="deleteButton">삭제</button>
+				<button class="btn_blue new" id="insertNewCustomer"onclick="toggleNewCustomerForm()">신규</button>
 				<br><br>
 				<button class="btn_yellow">고객조회</button>
 				<button class="nones"></button>

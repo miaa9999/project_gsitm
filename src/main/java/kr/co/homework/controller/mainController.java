@@ -92,26 +92,29 @@ public class mainController {
 	}
 
 	// 관리자 신규 등록
-	@PostMapping("customer/addCustomer")
-	public String addCustomer(@RequestParam("new_cust_nm") String new_cust_nm,
-			@RequestParam("new_pridtf_no") String new_pridtf_no, @RequestParam("new_eml_addr") String new_eml_addr,
-			@RequestParam("new_home_telno") String new_home_telno, @RequestParam("new_mbl_telno") String new_mbl_telno,
+		@PostMapping("customer/addCustomer")
+		public String addCustomer(@RequestParam("new_cust_nm") String new_cust_nm,
+				@RequestParam("new_pridtf_no") String new_pridtf_no, @RequestParam("new_eml_addr") String new_eml_addr,
+				@RequestParam("new_home_telno") String new_home_telno, @RequestParam("new_mbl_telno") String new_mbl_telno,
 
-			@RequestParam("new_cr_nm") String new_cr_nm, @RequestParam("new_road_nm_addr") String new_road_nm_addr) {
+				@RequestParam("new_cr_nm") String new_cr_nm, @RequestParam("new_road_nm_addr") String new_road_nm_addr) {
 
-		kdt_cust_info_basc_Dto customerDto = new kdt_cust_info_basc_Dto();
-		customerDto.setCust_nm(new_cust_nm);
-		customerDto.setPridtf_no(new_pridtf_no);
-		customerDto.setEml_addr(new_eml_addr);
-		customerDto.setHome_telno(new_home_telno);
-		customerDto.setMbl_telno(new_mbl_telno);
-		customerDto.setCr_nm(new_cr_nm);
-		customerDto.setRoad_nm_addr(new_road_nm_addr);
-
-		System.out.println(customerDto.getBrdt());
-		// System.out.println("등독된 새 사용자: " + customerDto.toString());
-		customerService.addCustomer(customerDto);
-		return "redirect:/customerInfoPage";
-	}
+			String birth = new_pridtf_no.substring(0,6);
+			System.out.println(birth);
+			
+			kdt_cust_info_basc_Dto customerDto = new kdt_cust_info_basc_Dto();
+			customerDto.setCust_nm(new_cust_nm);
+			customerDto.setPridtf_no(new_pridtf_no);
+			customerDto.setEml_addr(new_eml_addr);
+			customerDto.setHome_telno(new_home_telno);
+			customerDto.setMbl_telno(new_mbl_telno);
+			customerDto.setCr_nm(new_cr_nm);
+			customerDto.setRoad_nm_addr(new_road_nm_addr);
+			customerDto.setBrdt(birth);
+			
+			customerService.addCustomer(customerDto);
+			
+			return "redirect:/customerInfoPage";
+		}
 
 }
